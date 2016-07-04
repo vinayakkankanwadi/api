@@ -1,0 +1,6 @@
+{
+  "name": "api",
+  "main": "server.js",
+  "dependencies": {
+  }
+}
