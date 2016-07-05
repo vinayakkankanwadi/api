@@ -30,32 +30,9 @@ router.get('/',function(req,res){
 //USER
 var userRoute = router.route('/users');
 
-//GET
-userRoute.get(function(req,res){
-	User.find(function(err,users){
-		if(err)
-			res.send(err);
-		res.json(users);
-	});
-});
-
-var userRoute = router.route('/users/:id');
-
-// GET /users/:id  /users/101
-userRoute.get(function(req,res){
-	//console.log('Get id',req.params.id);
-	User.find({id:req.params.id},function(err,users){
-		if(err)
-			res.send(err);
-		
-		res.json(users);
-	});
-});
-
 // POST
-
 userRoute.post(function(req,res){
-	//console.log('POST',req.body.name,req.body.id);
+	console.log('POST',req.body.name,req.body.id);
 	var user = new User();
 	user.name = req.body.name;
 	user.id = req.body.id;
@@ -65,6 +42,54 @@ userRoute.post(function(req,res){
 			res.send(err);
 		res.json({message:'User added', data:user })
 	});	
+});
+
+//GET
+userRoute.get(function(req,res){
+	console.log('GET');
+	User.find(function(err,users){
+		if(err)
+			res.send(err);
+		res.json(users);
+	});
+});
+
+
+// GET /users/:id  /users/101
+var userRoute = router.route('/users/:id');
+
+userRoute.get(function(req,res){
+	console.log('Get id',req.params.id);
+	User.find({id:req.params.id},function(err,users){
+		if(err)
+			res.send(err);
+		
+		res.json(users);
+	});
+});
+
+// PUT
+userRoute.put(function(req,res){
+	console.log('PUT',req.params.id,req.body.newname);
+
+	User.update({id:req.params.id},{$set: {name:req.body.newname}},function(err){
+		//users.save(function(err){
+		if(err)
+			res.send(err);
+		res.json({message:'user updated',data:req.params.id});
+	});
+});
+
+// DELETE
+
+userRoute.delete(function(req,res){
+	console.log('DELETE',req.params.id);
+	
+	User.remove({id:req.params.id},function(err){
+		if(err)
+			res.send(err);
+		res.json({message:'user removed'});
+	});
 });
 
 // --------------------------------
