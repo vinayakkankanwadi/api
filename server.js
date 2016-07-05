@@ -39,6 +39,19 @@ userRoute.get(function(req,res){
 	});
 });
 
+var userRoute = router.route('/users/:id');
+
+// GET /users/:id  /users/101
+userRoute.get(function(req,res){
+	//console.log('Get id',req.params.id);
+	User.find({id:req.params.id},function(err,users){
+		if(err)
+			res.send(err);
+		
+		res.json(users);
+	});
+});
+
 // POST
 
 userRoute.post(function(req,res){
