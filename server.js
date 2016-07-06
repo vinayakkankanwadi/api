@@ -4,12 +4,15 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-var dataController = require('./controllers/data')
+var passport = require('passport');
+var dataController = require('./controllers/data');
+var userController = require('./controllers/user');
+var authController = require('./controllers/auth');
 
 // --------------------------------
 //Connect to data MongoDB
 // --------------------------------
-mongoose.connect('mongodb://localhost:27017/data')
+mongoose.connect('mongodb://localhost:27017/api')
 
 // Create our Express application
 var app = express();
@@ -18,15 +21,20 @@ var router = express.Router();
 
 // create endpoint handler for /data
 router.route('/data')
-	.post(dataController.postData)
-	.get(dataController.getDatas);
+	.post(authController.isAuthenticated,dataController.postData)
+	.get(authController.isAuthenticated,dataController.getDatas);
 	
 // create endpoint handler for /data/:id
 router.route('/data/:id')
-	.get(dataController.getData)
-	.put(dataController.putData)
-	.delete(dataController.deleteData);
+	.get(authController.isAuthenticated,dataController.getData)
+	.put(authController.isAuthenticated,dataController.putData)
+	.delete(authController.isAuthenticated,dataController.deleteData);
 
+// create endpoint handler for /users
+router.route('/user')
+	.post(userController.postUsers)
+	.get(authController.isAuthenticated,userController.getUsers);	
+	
 // --------------------------------
 // Register routers, body-parser
 // --------------------------------
@@ -34,6 +42,9 @@ router.route('/data/:id')
 app.use(bodyParser.urlencoded({
 	extended:true
 }));
+//Use passport 
+app.use(passport.initialize());
+
 app.use('/',router);
 
 
