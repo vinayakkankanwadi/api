@@ -4,7 +4,7 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-var User = require('./models/user');
+var Data = require('./models/data');
 
 // Create our Express application
 var app = express();
@@ -27,75 +27,75 @@ router.get('/',function(req,res){
 
 });
 
-//USER
-var userRoute = router.route('/users');
+//DATA
+var dataRoute = router.route('/data');
 
 // POST
-userRoute.post(function(req,res){
+dataRoute.post(function(req,res){
 	console.log('POST',req.body.name,req.body.id);
-	var user = new User();
-	user.name = req.body.name;
-	user.id = req.body.id;
+	var da = new Data();
+	da.name = req.body.name;
+	da.id = req.body.id;
 	
-	user.save(function(err){
+	da.save(function(err){
 		if(err)
 			res.send(err);
-		res.json({message:'User added', data:user })
+		res.json({message:'Data added', data:da })
 	});	
 });
 
 //GET
-userRoute.get(function(req,res){
+dataRoute.get(function(req,res){
 	console.log('GET');
-	User.find(function(err,users){
+	Data.find(function(err,da){
 		if(err)
 			res.send(err);
-		res.json(users);
+		res.json(da);
 	});
 });
 
 
-// GET /users/:id  /users/101
-var userRoute = router.route('/users/:id');
+// GET /data/:id  /data/101
+var dataRoute = router.route('/data/:id');
 
-userRoute.get(function(req,res){
+dataRoute.get(function(req,res){
 	console.log('Get id',req.params.id);
-	User.find({id:req.params.id},function(err,users){
+	Data.find({id:req.params.id},function(err,da){
 		if(err)
 			res.send(err);
 		
-		res.json(users);
+		res.json(da);
 	});
 });
 
 // PUT
-userRoute.put(function(req,res){
+dataRoute.put(function(req,res){
 	console.log('PUT',req.params.id,req.body.newname);
 
-	User.update({id:req.params.id},{$set: {name:req.body.newname}},function(err){
-		//users.save(function(err){
+	Data.update({id:req.params.id},{$set: {name:req.body.newname}},function(err){
+		//dara.save(function(err){
 		if(err)
 			res.send(err);
-		res.json({message:'user updated',data:req.params.id});
+		res.json({message:'data updated',data:req.params.id});
 	});
 });
 
 // DELETE
 
-userRoute.delete(function(req,res){
+dataRoute.delete(function(req,res){
 	console.log('DELETE',req.params.id);
 	
-	User.remove({id:req.params.id},function(err){
+	Data.remove({id:req.params.id},function(err){
 		if(err)
 			res.send(err);
-		res.json({message:'user removed'});
+		res.json({message:'data removed'});
 	});
 });
 
 // --------------------------------
-//Connect to users MongoDB
+//Connect to data MongoDB
 // --------------------------------
-mongoose.connect('mongodb://localhost:27017/users')
+mongoose.connect('mongodb://localhost:27017/data')
 
 // Start the server on the port
 var port = 3000;
